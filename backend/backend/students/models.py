@@ -12,10 +12,3 @@ class Student(models.Model):
         return self.name
 
 
-# class Product(models.Model):
-#     name = models.CharField()
-#     price = models.IntegerField()
-
-
-# class reviews(models.Model):
-#     name_rev = 
