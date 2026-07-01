@@ -10,9 +10,6 @@ export const router = createBrowserRouter([
     element: <Layout />,
     children: [
       { index: true, element: <AllTodos /> },
-      // { path: "product", element: <Products /> },
-      // {path: "customer", element: <CustomerForm />}
-    
     ],
   },
 ]);
