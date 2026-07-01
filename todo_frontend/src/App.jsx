@@ -1,12 +1,9 @@
-import React, { useState, useEffect } from "react";
-import StudentList from "../src/components/AllStudents";
+import React from "react";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./router";
 
 function App() {
-
-  return (
-<>
-    <StudentList/>  
-</>
-  )
+  return <RouterProvider router={router} />;
 }
+
 export default App;

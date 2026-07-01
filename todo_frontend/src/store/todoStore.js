@@ -1,11 +1,12 @@
 import { create } from 'zustand';
 import axios from 'axios';
 
-const API_URL = 'http://127.0.0.1:8000/todo/';
+const API_URL = 'http://127.0.0.1:8000/todo/'; // Note the trailing slash '/'
 
 const useTodoStore = create((set, get) => ({
-  // --- STATE VARIABLES ---
-  todos: [], 
+  // --- States ---
+  todos: [],
+  isFormOpen: false,
   todoData: {
     title: '',
     description: '',
@@ -13,7 +14,10 @@ const useTodoStore = create((set, get) => ({
     is_completed: false
   },
 
-  // --- ACTIONS (State Modifiers) ---
+  // --- UI Actions ---
+  openForm: () => set({ isFormOpen: true }),
+  closeForm: () => set({ isFormOpen: false }),
+  
   setTodoData: (data) =>
     set((state) => ({
       todoData: {
@@ -32,34 +36,37 @@ const useTodoStore = create((set, get) => ({
       }
     }),
 
+  // --- API Actions (Async) ---
   
-  // 1. GET: Fetch all todos from Django
+  // 1. GET ALL TODOS
   fetchTodos: async () => {
     try {
       const response = await axios.get(API_URL);
       set({ todos: response.data });
-      console.log("Todos fetched successfully");
+      console.log("Todos fetched successfully:", response.data);
     } catch (error) {
-      console.error("Error fetching todos:", error);
+      console.error("Todo is not fetched:", error);
     }
   },
 
-  // 2. POST: Create a new todo
+  // 2. CREATE TODO
   createTodo: async () => {
-    const { todoData, fetchTodos, resetTodoData } = get();
+    const { todoData, fetchTodos, resetTodoData, closeForm } = get();
     try {
-      await axios.post(API_URL, todoData, {
+      const response = await axios.post(API_URL, todoData, {
         headers: { 'Content-Type': 'application/json' }
       });
-      console.log("Todo created successfully");
-      resetTodoData(); 
-      await fetchTodos();    
+      console.log("Todo created successfully:", response.data);
+      
+      resetTodoData(); // Form clear karein
+      closeForm();     // Form close karein
+      await fetchTodos();    // List refresh karein
     } catch (error) {
-      console.error("Error creating todo:", error);
+      console.error("Todo is not created:", error);
     }
   },
 
-  // 3. PUT: Toggle todo completion status
+  // 3. TOGGLE COMPLETE (Status Update)
   toggleTodoComplete: async (todo) => {
     const { fetchTodos } = get();
     try {
@@ -69,19 +76,18 @@ const useTodoStore = create((set, get) => ({
       });
       await fetchTodos();
     } catch (error) {
-      console.error("Error toggling todo:", error);
+      console.error("Error updating status:", error);
     }
   },
 
-  // 4. DELETE: Remove todo from database
+  // 4. DELETE TODO
   deleteTodo: async (id) => {
     const { fetchTodos } = get();
     try {
       await axios.delete(`${API_URL}${id}/`);
-      console.log("Todo deleted");
       await fetchTodos();
     } catch (error) {
-      console.error("Error deleting todo:", error);
+      console.error("Todo deleted successfully");
     }
   }
 }));

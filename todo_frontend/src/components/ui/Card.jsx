@@ -1,16 +1,57 @@
-import React from "react";
-import { Slot } from "@radix-ui/react-slot";
-import { twMerge } from "tailwind-merge";
+import * as React from "react"
+import { twMerge } from "tailwind-merge"
 
-const Card = ({ title, description, children, className, asChild }) => {
-  const Comp = asChild ? Slot : "div";
-  return (
-    <Comp className={twMerge("bg-white shadow-lg rounded-xl p-5 border border-gray-300", className)}>
-      {title && <h2 className="text-lg font-semibold mb-2">{title}</h2>}
-      {description && <p className="text-gray-600 mb-3">{description}</p>}
-      {children}
-    </Comp>
-  );
-};
+const Card = React.forwardRef(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={twMerge(
+      "rounded-xl border border-slate-200 bg-white text-slate-950 shadow-sm dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50",
+      className
+    )}
+    {...props}
+  />
+))
+Card.displayName = "Card"
 
-export default Card;
+const CardHeader = React.forwardRef(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={twMerge("flex flex-col space-y-1.5 p-6", className)}
+    {...props}
+  />
+))
+CardHeader.displayName = "CardHeader"
+
+const CardTitle = React.forwardRef(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={twMerge("text-2xl font-semibold leading-none tracking-tight", className)}
+    {...props}
+  />
+))
+CardTitle.displayName = "CardTitle"
+
+const CardDescription = React.forwardRef(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={twMerge("text-sm text-slate-500 dark:text-slate-400", className)}
+    {...props}
+  />
+))
+CardDescription.displayName = "CardDescription"
+
+const CardContent = React.forwardRef(({ className, ...props }, ref) => (
+  <div ref={ref} className={twMerge("p-6 pt-0", className)} {...props} />
+))
+CardContent.displayName = "CardContent"
+
+const CardFooter = React.forwardRef(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={twMerge("flex items-center p-6 pt-0", className)}
+    {...props}
+  />
+))
+CardFooter.displayName = "CardFooter"
+
+export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
